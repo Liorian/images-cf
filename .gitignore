@@ -38,3 +38,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# local environment settings
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
