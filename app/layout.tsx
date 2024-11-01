@@ -1,6 +1,7 @@
 import React from "react";
 import {Metadata} from "next";
 import {NavLinks} from "@/app/ui/nav-links";
+import '@/app/globals.css'
 
 export const metadata: Metadata = {
     title: 'Next.js',
