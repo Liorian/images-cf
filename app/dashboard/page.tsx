@@ -1,12 +1,15 @@
-// `app/dashboard/page.tsx` is the UI for the `/dashboard` URL
+import {Suspense} from 'react'
+import {PostFeed, Weather} from '@/app/dashboard/Components'
 
-async function getData() {
-    // 模拟一个 3 秒的延迟
-    await new Promise((resolve) => setTimeout(resolve, 3000));
-    console.log('Successfully getData');
-}
-
-export default async function Page() {
-    await getData();
-    return <h1>Hello, Dashboard Page!</h1>
+export default function Posts() {
+    return (
+        <section>
+            <Suspense fallback={<p>正在加载...</p>}>
+                <PostFeed/>
+            </Suspense>
+            <Suspense fallback={<p>加载天气...</p>}>
+                <Weather/>
+            </Suspense>
+        </section>
+    )
 }
