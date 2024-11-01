@@ -1,6 +1,6 @@
 import React from "react";
 import {Metadata} from "next";
-import {NavLinks} from "@/app/ui/nav-links";
+import NavBar from "@/app/ui/nav-bar";
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
@@ -10,7 +10,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
     return (
         <html lang="en">
         <body>
-        <NavLinks/>
+        <NavBar/>
         <main>{children}</main>
         </body>
         </html>
