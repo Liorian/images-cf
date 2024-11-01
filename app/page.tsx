@@ -1,13 +1,14 @@
 'use client'
 
 import {useRouter} from "next/navigation";
+import {Button} from "@/components/ui/button"
 
 export default function Page() {
     const router = useRouter();
 
     return (
-        <button type="button" onClick={() => router.push('/dashboard')}>
+        <Button type="button" onClick={() => router.push('/dashboard')}>
             Dashboard
-        </button>
+        </Button>
     )
 }
