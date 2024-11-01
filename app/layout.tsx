@@ -1,7 +1,6 @@
 import React from "react";
 import {Metadata} from "next";
 import NavBar from "@/app/ui/nav-bar";
-import NavFooter from "@/app/ui/nav-footer";
 import '@/app/globals.css'
 
 export const metadata: Metadata = {
@@ -12,8 +11,7 @@ export default function RootLayout({children}: { children: React.ReactNode }) {
         <html lang="en">
         <body>
         <NavBar/>
-        <main className="min-h-screen">{children}</main>
-        <NavFooter/>
+        <main>{children}</main>
         </body>
         </html>
     )
