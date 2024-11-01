@@ -1,36 +1,108 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 图片托管平台
 
-## Getting Started
+一个现代化的图片托管和分享平台，支持图片上传、AI 生成、社交分享等功能。
 
-First, run the development server:
+## 功能特性
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+### 待实现功能
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- 用户系统
+    - [ ] 用户个人资料
+        - 基本信息编辑（用户名、简介、个人网站等）
+        - 个性化设置（主题、语言偏好）
+        - 账号安全设置
+    - [ ] 头像上传
+        - 支持裁剪和预览
+        - 支持多种图片格式
+    - [ ] 密码重置
+        - 邮箱验证流程
+        - 安全问题验证
+    - [ ] 第三方登录
+        - Google 登录
+        - GitHub 登录
+        - 微信登录（可选）
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- 图片管理
+    - [ ] 图片上传
+        - 拖拽上传
+        - 多图片批量上传
+        - 进度条显示
+        - 自动压缩优化
+    - [ ] 图片预览
+        - 灯箱效果
+        - 缩放和旋转
+        - EXIF 信息显示
+    - [ ] 图片编辑
+        - 基础裁剪和旋转
+        - 滤镜效果
+        - 水印添加
+    - [ ] 图片删除
+        - 单张/批量删除
+        - 回收站功能
+    - [ ] 图片分类
+        - 自定义标签
+        - 智能分类
+        - 按日期归档
+    - [ ] 相册管理
+        - 创建/编辑相册
+        - 相册封面设置
+        - 权限管理（公开/私密）
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- AI 功能
+    - [ ] AI 图片生成
+        - 文本到图像生成
+        - 多种模型选择
+        - 批量生成
+    - [ ] 提示词优化
+        - 提示词推荐
+        - 历史提示词管理
+        - 社区热门提示词
+    - [ ] 风格迁移
+        - 预设风格模板
+        - 自定义风格上传
+        - 参数微调
 
-## Learn More
+- 社交功能
+    - [ ] 图片分享
+        - 社交平台一键分享
+        - 分享链接生成
+        - 嵌入代码生成
+    - [ ] 点赞/收藏
+        - 点赞动画效果
+        - 收藏夹管理
+        - 数据统计
+    - [ ] 评论系统
+        - 多级评论
+        - 表情/图片评论
+        - 评论通知
+    - [ ] 用户关注
+        - 关注/粉丝列表
+        - 动态推送
+        - 互动记录
 
-To learn more about Next.js, take a look at the following resources:
+- 探索页面
+    - [ ] 图片流展示
+        - 瀑布流布局
+        - 无限滚动
+        - 懒加载优化
+    - [ ] 分类筛选
+        - 多维度筛选
+        - 标签云展示
+        - 快速过滤
+    - [ ] 搜索功能
+        - 实时搜索提示
+        - 高级搜索选项
+        - 搜索历史记录
+    - [ ] 排序功能
+        - 多种排序方式
+        - 自定义排序
+        - 智能推荐
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 技术栈
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **框架**: Next.js 15
+- **语言**: TypeScript
+- **样式**: Tailwind CSS
+- **UI 组件**: shadcn/ui
+- **状态管理**: React Hooks
+- **图标**: Lucide Icons
