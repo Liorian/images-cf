@@ -7,6 +7,8 @@ interface User {
     name: string
     email: string
     avatar_url: string
+    bio?: string
+    website?: string
 }
 
 export function useAuth() {

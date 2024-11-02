@@ -1,47 +1,24 @@
 'use client'
 
-import React, { useState } from 'react'
-import { Card } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Button } from "@/components/ui/button"
-import { Textarea } from "@/components/ui/textarea"
-import { User, PencilLine, Link as LinkIcon, Loader2 } from "lucide-react"
+import React, {useState} from 'react'
+import {Card} from "@/components/ui/card"
+import {Input} from "@/components/ui/input"
+import {Button} from "@/components/ui/button"
+import {Textarea} from "@/components/ui/textarea"
+import {User, PencilLine, Link as LinkIcon, Loader2} from "lucide-react"
 import Image from "next/image"
+import {useAuth} from "@/hooks/use-auth";
 
-interface ProfileUser {
-    name?: string;
-    email?: string;
-    avatar_url?: string;
-    bio?: string;
-    website?: string;
-}
 
 export default function ProfilePage() {
+    const {user, loading} = useAuth();
     const [isEditing, setIsEditing] = useState(false)
     const [isLoading, setIsLoading] = useState(false)
-    const [avatarPreview, setAvatarPreview] = useState<string | null>(null)
-    
-    // 模拟用户数据
-    const mockUser: ProfileUser = {
-        name: "测试用户",
-        email: "test@example.com",
-        avatar_url: "/placeholder-avatar.png",
-        bio: "这是一段示例简介",
-        website: "https://example.com"
-    }
 
-    const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        if (e.target.files && e.target.files[0]) {
-            const file = e.target.files[0]
-            const objectUrl = URL.createObjectURL(file)
-            setAvatarPreview(objectUrl)
-        }
-    }
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
         setIsLoading(true)
-        // 模拟提交
         await new Promise(resolve => setTimeout(resolve, 1000))
         setIsLoading(false)
         setIsEditing(false)
@@ -63,14 +40,12 @@ export default function ProfilePage() {
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <div className="relative">
                             <div className="w-32 h-32 rounded-full overflow-hidden bg-muted">
-                                {(avatarPreview || mockUser.avatar_url) ? (
+                                {(user?.avatar_url) ? (
                                     <Image
-                                        src={avatarPreview || mockUser.avatar_url || ''}
-                                        alt={`${mockUser.name || 'User'}'s avatar`}
-                                        width={128}
-                                        height={128}
+                                        src={user?.avatar_url || ''}
+                                        width={128} height={128}
+                                        alt={`${user?.name || 'User'}'s avatar`}
                                         className="object-cover w-full h-full"
-                                        priority
                                     />
                                 ) : (
                                     <div className="w-full h-full flex items-center justify-center bg-muted">
@@ -90,15 +65,14 @@ export default function ProfilePage() {
                                             type="file"
                                             className="hidden"
                                             accept="image/*"
-                                            onChange={handleAvatarChange}
                                         />
                                     </label>
                                 </div>
                             )}
                         </div>
                         <div className="flex-1 space-y-2 text-center md:text-left">
-                            <h3 className="text-xl font-semibold">{mockUser.name}</h3>
-                            <p className="text-muted-foreground">{mockUser.email}</p>
+                            <h3 className="text-xl font-semibold">{user?.name}</h3>
+                            <p className="text-muted-foreground">{user?.email}</p>
                         </div>
                     </div>
                 </Card>
@@ -111,7 +85,7 @@ export default function ProfilePage() {
                                 <label className="text-sm font-medium">用户名</label>
                                 <Input
                                     name="name"
-                                    defaultValue={mockUser.name}
+                                    defaultValue={user?.name}
                                     disabled={!isEditing}
                                     required
                                 />
@@ -122,7 +96,7 @@ export default function ProfilePage() {
                                 <Textarea
                                     name="bio"
                                     placeholder="介绍一下自己..."
-                                    defaultValue={mockUser.bio}
+                                    defaultValue={user?.bio}
                                     disabled={!isEditing}
                                     className="resize-none"
                                     rows={4}
@@ -137,7 +111,7 @@ export default function ProfilePage() {
                                         name="website"
                                         type="url"
                                         placeholder="https://"
-                                        defaultValue={mockUser.website}
+                                        defaultValue={user?.website}
                                         disabled={!isEditing}
                                         className="pl-9"
                                     />
@@ -153,7 +127,6 @@ export default function ProfilePage() {
                                         variant="outline"
                                         onClick={() => {
                                             setIsEditing(false)
-                                            setAvatarPreview(null)
                                         }}
                                         disabled={isLoading}
                                     >
