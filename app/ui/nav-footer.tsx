@@ -13,10 +13,10 @@ export default function NavFooter() {
                     <div className="space-y-4">
                         <h3 className="font-semibold">快速链接</h3>
                         <div className="grid grid-cols-2 gap-2">
-                            <a href="#" className="text-sm text-gray-500 hover:text-black transition-colors">关于我们</a>
-                            <a href="#" className="text-sm text-gray-500 hover:text-black transition-colors">帮助中心</a>
-                            <a href="#" className="text-sm text-gray-500 hover:text-black transition-colors">使用条款</a>
-                            <a href="#" className="text-sm text-gray-500 hover:text-black transition-colors">隐私政策</a>
+                            <a href="/about" className="text-sm text-gray-500 hover:text-black transition-colors">关于我们</a>
+                            <a href="/help" className="text-sm text-gray-500 hover:text-black transition-colors">帮助中心</a>
+                            <a href="/terms" className="text-sm text-gray-500 hover:text-black transition-colors">使用条款</a>
+                            <a href="/privacy" className="text-sm text-gray-500 hover:text-black transition-colors">隐私政策</a>
                         </div>
                     </div>
 

@@ -9,7 +9,11 @@ const JWT_SECRET = new TextEncoder().encode(
 // 公开路由白名单
 const publicPaths = [
   '/',
-  '/user/login'
+  '/user/login',
+  '/about',
+  '/help',
+  '/terms',
+  '/privacy'
 ]
 
 export async function middleware(request: NextRequest) {
