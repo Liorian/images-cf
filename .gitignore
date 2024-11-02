@@ -44,3 +44,9 @@ next-env.d.ts
 .idea/
 *.sublime-project
 *.sublime-workspace
+
+# 数据库相关
+*.sql
+!db/migrations/*.sql
+
+.vercel
