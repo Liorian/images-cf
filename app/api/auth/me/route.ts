@@ -20,7 +20,7 @@ export async function GET() {
 
         const user = await db
             .selectFrom('users')
-            .select(['id', 'name', 'email', 'avatar_url'])
+            .select(['id', 'name', 'email', 'bio', 'website', 'avatar_url'])
             .where('id', '=', payload.userId as string)
             .executeTakeFirst()
 
