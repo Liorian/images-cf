@@ -1,8 +1,8 @@
 'use client'
 
 import Link from "next/link"
-import { Mountain, User, LogOut, Settings } from "lucide-react"
-import { useAuth } from "@/hooks/use-auth"
+import {Mountain, User, LogOut, Settings} from "lucide-react"
+import {useAuth} from "@/hooks/use-auth"
 import {
     DropdownMenu,
     DropdownMenuContent,
@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/dropdown-menu"
 
 export default function NavBar() {
-    const { user, loading } = useAuth()
+    const {user, loading} = useAuth()
 
     return (
         <header
@@ -45,16 +45,26 @@ export default function NavBar() {
                         >
                             上传
                         </Link>
-                        
+
                         {loading ? (
-                            <div className="w-20 h-8 bg-gray-200 animate-pulse rounded-full" />
+                            <div className="w-20 h-8 bg-gray-200 animate-pulse rounded-full"/>
                         ) : user ? (
                             <DropdownMenu>
                                 <DropdownMenuTrigger asChild>
-                                    <button className="flex items-center space-x-2 hover:opacity-80 transition-opacity focus:outline-none">
-                                        <div className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
-                                            <User className="h-4 w-4 text-gray-600" />
-                                        </div>
+                                    <button
+                                        className="flex items-center space-x-2 hover:opacity-80 transition-opacity focus:outline-none">
+                                        {user.avatar_url ? (
+                                            <img
+                                                src={user.avatar_url}
+                                                alt={user.name}
+                                                className="w-8 h-8 rounded-full object-cover"
+                                            />
+                                        ) : (
+                                            <div
+                                                className="flex items-center justify-center w-8 h-8 rounded-full bg-gray-100">
+                                                <User className="h-4 w-4 text-gray-600"/>
+                                            </div>
+                                        )}
                                     </button>
                                 </DropdownMenuTrigger>
 
@@ -67,13 +77,13 @@ export default function NavBar() {
                                             {user.email}
                                         </p>
                                     </div>
-                                    <div className="h-px bg-gray-200 my-1" />
+                                    <div className="h-px bg-gray-200 my-1"/>
                                     <DropdownMenuItem asChild>
                                         <Link
                                             href="/user/profile"
                                             className="flex items-center cursor-pointer"
                                         >
-                                            <Settings className="mr-2 h-4 w-4" />
+                                            <Settings className="mr-2 h-4 w-4"/>
                                             <span>个人设置</span>
                                         </Link>
                                     </DropdownMenuItem>
@@ -87,7 +97,7 @@ export default function NavBar() {
                                             })
                                         }}
                                     >
-                                        <LogOut className="mr-2 h-4 w-4" />
+                                        <LogOut className="mr-2 h-4 w-4"/>
                                         <span>退出登录</span>
                                     </DropdownMenuItem>
                                 </DropdownMenuContent>

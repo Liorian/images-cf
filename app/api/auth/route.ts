@@ -10,6 +10,11 @@ const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || 'your-secret-key'
 );
 
+// 添加生成头像 URL 的函数
+function generateAvatarUrl(seed: string) {
+    return `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(seed)}`;
+}
+
 export async function POST(request: Request) {
     try {
         const {action, email, password, name} = await request.json();
@@ -87,7 +92,10 @@ export async function POST(request: Request) {
             // 密码加密
             const hashedPassword = await bcrypt.hash(password, 10);
 
-            // 创建新用户
+            // 生成头像 URL
+            const avatarUrl = generateAvatarUrl(email);
+
+            // 创建新用户时包含头像
             const result = await db
                 .insertInto('users')
                 .values({
@@ -95,10 +103,11 @@ export async function POST(request: Request) {
                     name,
                     email,
                     password: hashedPassword,
+                    avatar_url: avatarUrl,
                     created_at: new Date(),
                     updated_at: new Date()
                 })
-                .returning(['id', 'name', 'email', 'created_at'])
+                .returning(['id', 'name', 'email', 'avatar_url', 'created_at'])
                 .executeTakeFirstOrThrow();
 
             return NextResponse.json({
