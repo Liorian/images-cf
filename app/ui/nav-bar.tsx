@@ -9,6 +9,7 @@ import {
     DropdownMenuItem,
     DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
+import Image from "next/image";
 
 export default function NavBar() {
     const {user, loading} = useAuth()
@@ -35,12 +36,14 @@ export default function NavBar() {
                         </Link>
                         <Link
                             href="/explore"
+                            prefetch={true}
                             className="text-sm font-medium text-gray-600 hover:text-black transition-colors"
                         >
                             探索
                         </Link>
                         <Link
                             href="/upload"
+                            prefetch={true}
                             className="text-sm font-medium text-gray-600 hover:text-black transition-colors"
                         >
                             上传
@@ -54,7 +57,7 @@ export default function NavBar() {
                                     <button
                                         className="flex items-center space-x-2 hover:opacity-80 transition-opacity focus:outline-none">
                                         {user.avatar_url ? (
-                                            <img
+                                            <Image
                                                 src={user.avatar_url}
                                                 alt={user.name}
                                                 className="w-8 h-8 rounded-full object-cover"
@@ -81,6 +84,7 @@ export default function NavBar() {
                                     <DropdownMenuItem asChild>
                                         <Link
                                             href="/user/profile"
+                                            prefetch={true}
                                             className="flex items-center cursor-pointer"
                                         >
                                             <Settings className="mr-2 h-4 w-4"/>
@@ -105,6 +109,7 @@ export default function NavBar() {
                         ) : (
                             <Link
                                 href="/user/login"
+                                prefetch={true}
                                 className="text-sm font-medium px-4 py-2 rounded-full bg-black text-white hover:bg-black/90 transition-colors"
                             >
                                 登录
