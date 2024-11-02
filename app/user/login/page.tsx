@@ -20,6 +20,20 @@ import {
     FormMessage,
 } from "@/components/ui/form"
 
+// 定义登录表单数据类型
+interface LoginFormData {
+    email: string;
+    password: string;
+}
+
+// 定义注册表单数据类型
+interface RegisterFormData {
+    name: string;
+    email: string;
+    password: string;
+    confirmPassword: string;
+}
+
 // 登录表单的验证模式：要求有效的邮箱和至少6位密码
 const loginSchema = z.object({
     email: z.string().email('请输入有效的邮箱地址'),
@@ -66,7 +80,7 @@ export default function LoginPage() {
      * 处理表单提交
      * @param data - 表单数据
      */
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: LoginFormData | RegisterFormData) => {
         setIsLoading(true)
 
         try {
