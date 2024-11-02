@@ -1,9 +1,9 @@
 import {NextResponse} from 'next/server';
 import bcrypt from 'bcrypt';
-import {sql} from '@vercel/postgres';
-import {User} from '@/app/lib/definitions';
+import {db} from '@/lib/db';
 import {SignJWT} from 'jose';
 import {nanoid} from 'nanoid';
+import {sql} from 'kysely';
 
 // 用于 JWT 签名的密钥
 const JWT_SECRET = new TextEncoder().encode(
@@ -16,18 +16,19 @@ export async function POST(request: Request) {
 
         if (action === 'login') {
             // 登录逻辑
-            const result = await sql<User>`
-                SELECT * FROM users WHERE email = ${email}
-            `;
+            const user = await db
+                .selectFrom('users')
+                .selectAll()
+                .where('email', '=', email)
+                .executeTakeFirst();
 
-            if (result.rows.length === 0) {
+            if (!user) {
                 return NextResponse.json(
                     {error: '用户不存在'},
                     {status: 404}
                 );
             }
 
-            const user = result.rows[0];
             const passwordMatch = await bcrypt.compare(password, user.password);
 
             if (!passwordMatch) {
@@ -70,11 +71,13 @@ export async function POST(request: Request) {
 
         } else if (action === 'register') {
             // 检查邮箱是否已存在
-            const existingUser = await sql`
-                SELECT * FROM users WHERE email = ${email}
-            `;
+            const existingUser = await db
+                .selectFrom('users')
+                .selectAll()
+                .where('email', '=', email)
+                .executeTakeFirst();
 
-            if (existingUser.rows.length > 0) {
+            if (existingUser) {
                 return NextResponse.json(
                     {error: '邮箱已被注册'},
                     {status: 409}
@@ -85,14 +88,21 @@ export async function POST(request: Request) {
             const hashedPassword = await bcrypt.hash(password, 10);
 
             // 创建新用户
-            const result = await sql<User>`
-                INSERT INTO users (id, name, email, password, created_at, updated_at)
-                VALUES (gen_random_uuid(), ${name}, ${email}, ${hashedPassword}, NOW(), NOW())
-                RETURNING id, name, email, created_at
-            `;
+            const result = await db
+                .insertInto('users')
+                .values({
+                    id: sql`gen_random_uuid()`,
+                    name,
+                    email,
+                    password: hashedPassword,
+                    created_at: new Date(),
+                    updated_at: new Date()
+                })
+                .returning(['id', 'name', 'email', 'created_at'])
+                .executeTakeFirstOrThrow();
 
             return NextResponse.json({
-                user: result.rows[0]
+                user: result
             });
         }
 
