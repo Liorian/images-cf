@@ -6,47 +6,42 @@ const JWT_SECRET = new TextEncoder().encode(
   process.env.JWT_SECRET || 'your-secret-key'
 );
 
-// 需要认证的路由
-const protectedPaths = [
-  '/dashboard',
-  '/profile',
-  '/upload'
+// 公开路由白名单
+const publicPaths = [
+  '/',
+  '/user/login'
 ]
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname
 
-  // 检查是否是受保护的路由
-  if (protectedPaths.some(prefix => path.startsWith(prefix))) {
-    const token = request.cookies.get('auth-token')
-
-    if (!token) {
-      return NextResponse.redirect(new URL('/user/login', request.url))
-    }
-
-    try {
-      // 验证 JWT
-      await jwtVerify(token.value, JWT_SECRET)
-      return NextResponse.next()
-    } catch {
-      // Token 无效
-      return NextResponse.redirect(new URL('/user/login', request.url))
-    }
+  // 检查是否是公开路由
+  if (publicPaths.some(prefix => path === prefix)) {
+    return NextResponse.next()
   }
 
-  return NextResponse.next()
+  // 对于非公开路由，验证用户是否已登录
+  const token = request.cookies.get('auth-token')
+
+  if (!token) {
+    return NextResponse.redirect(new URL('/user/login', request.url))
+  }
+
+  try {
+    // 验证 JWT
+    await jwtVerify(token.value, JWT_SECRET)
+    return NextResponse.next()
+  } catch {
+    // Token 无效
+    return NextResponse.redirect(new URL('/user/login', request.url))
+  }
 }
 
 export const config = {
   matcher: [
     /*
-     * 匹配所有需要认证的路由
-     * - /api/auth/* (auth API routes)
-     * - /dashboard/* (dashboard pages)
-     * - /profile/* (profile pages)
+     * 匹配除了 _next/static、_next/image、favicon.ico 等静态资源以外的所有路由
      */
-    '/dashboard/:path*',
-    '/profile/:path*',
-    '/upload/:path*',
+    '/((?!api|_next/static|_next/image|favicon.ico).*)',
   ],
 } 
