@@ -7,12 +7,14 @@ import {Button} from "@/components/ui/button"
 import {LogIn, UserPlus, Mail, Lock, User} from "lucide-react"
 import {useRouter} from 'next/navigation'
 import {useToast} from "@/hooks/use-toast"
+import { useAuth } from '@/hooks/use-auth'
 
 export default function LoginPage() {
     const router = useRouter()
     const {toast} = useToast()
     const [isLogin, setIsLogin] = useState(true)
     const [isLoading, setIsLoading] = useState(false)
+    const { refreshUser } = useAuth()
 
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault()
@@ -55,6 +57,7 @@ export default function LoginPage() {
                 title: isLogin ? "登录成功" : "注册成功",
                 description: "正在跳转..."
             })
+            await refreshUser()
             router.push('/')
 
         } catch (error) {

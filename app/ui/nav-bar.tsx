@@ -12,7 +12,18 @@ import {
 import Image from "next/image";
 
 export default function NavBar() {
-    const {user, loading} = useAuth()
+    const {user, loading, refreshUser} = useAuth()
+
+    const handleLogout = async () => {
+        try {
+            await fetch('/api/auth/logout', {
+                method: 'POST'
+            })
+            await refreshUser()
+        } catch (error) {
+            console.error('Logout failed:', error)
+        }
+    }
 
     return (
         <header
@@ -95,13 +106,7 @@ export default function NavBar() {
                                     </DropdownMenuItem>
                                     <DropdownMenuItem
                                         className="text-red-600 focus:text-red-600 focus:bg-red-50"
-                                        onClick={() => {
-                                            fetch('/api/auth/logout', {
-                                                method: 'POST'
-                                            }).then(() => {
-                                                window.location.reload()
-                                            })
-                                        }}
+                                        onClick={handleLogout}
                                     >
                                         <LogOut className="mr-2 h-4 w-4"/>
                                         <span>退出登录</span>

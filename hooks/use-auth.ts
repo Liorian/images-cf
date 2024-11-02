@@ -1,6 +1,6 @@
 'use client'
 
-import {useEffect, useState} from 'react'
+import useSWR from 'swr'
 
 interface User {
     id: string
@@ -11,21 +11,32 @@ interface User {
     website?: string
 }
 
+const fetcher = async (url: string) => {
+    const res = await fetch(url)
+    if (!res.ok) {
+        throw new Error('Failed to fetch user data')
+    }
+    const data = await res.json()
+    return data.user
+}
+
 export function useAuth() {
-    const [user, setUser] = useState<User | null>(null)
-    const [loading, setLoading] = useState(true)
+    const { data: user, error, isLoading, mutate } = useSWR<User>('/api/auth/me', fetcher, {
+        revalidateOnFocus: true,
+        revalidateOnReconnect: true,
+        refreshInterval: 0, // 禁用自动刷新
+        shouldRetryOnError: false,
+        dedupingInterval: 0, // 禁用重复请求的去重时间
+    })
 
-    useEffect(() => {
-        fetch('/api/auth/me')
-            .then(res => res.json())
-            .then(data => {
-                setUser(data.user)
-                setLoading(false)
-            })
-            .catch(() => {
-                setLoading(false)
-            })
-    }, [])
+    const refreshUser = async () => {
+        await mutate(undefined, { revalidate: true })
+    }
 
-    return {user, loading}
+    return {
+        user,
+        loading: isLoading,
+        error,
+        refreshUser
+    }
 }
