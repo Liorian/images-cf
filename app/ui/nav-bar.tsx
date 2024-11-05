@@ -35,7 +35,7 @@ export default function NavBar() {
                         className="flex items-center space-x-2 hover:opacity-90 transition-opacity"
                     >
                         <Mountain className="h-6 w-6 text-black"/>
-                        <span className="font-semibold text-lg">图片托管</span>
+                        <span className="font-semibold text-lg">图片托管111</span>
                     </Link>
 
                     <div className="flex items-center space-x-6">
