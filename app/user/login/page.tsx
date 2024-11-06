@@ -110,7 +110,9 @@ export default function LoginPage() {
                 title: isLogin ? "登录成功" : "注册成功",
                 description: "正在跳转..."
             })
-            await refreshUser()
+
+            // 立即更新用户状态并跳转
+            await refreshUser(result.user)
             router.push('/')
 
         } catch (error) {
