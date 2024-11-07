@@ -1,4 +1,5 @@
-// import {createUsersTable} from '@/lib/init-db';
+import {createUsersTable} from '@/lib/init-db';
+import {NextResponse} from "next/server";
 
 export async function GET() {
     return Response.json({
@@ -9,13 +10,13 @@ export async function GET() {
     // try {
     //     await createUsersTable();
     //     console.log('数据库初始化成功');
-    //     return Response.json({
+    //     return NextResponse.json({
     //         message: '数据库初始化成功',
     //         status: 'success'
     //     });
     // } catch (error) {
     //     console.error('数据库初始化失败:', error);
-    //     return Response.json({
+    //     return NextResponse.json({
     //         message: '数据库初始化失败',
     //         error: error instanceof Error ? error.message : '未知错误',
     //         status: 'error'
