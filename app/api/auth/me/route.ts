@@ -1,6 +1,6 @@
 import {NextResponse} from 'next/server'
 import {jwtVerify} from 'jose'
-import {db} from '@/lib/db'
+import {prisma} from '@/lib/prisma'
 import {cookies} from 'next/headers'
 
 const JWT_SECRET = new TextEncoder().encode(
@@ -18,11 +18,19 @@ export async function GET() {
 
         const {payload} = await jwtVerify(token, JWT_SECRET)
 
-        const user = await db
-            .selectFrom('users')
-            .select(['id', 'name', 'email', 'bio', 'website', 'avatar_url'])
-            .where('id', '=', payload.userId as string)
-            .executeTakeFirst()
+        const user = await prisma.users.findUnique({
+            where: {
+                id: payload.userId as string
+            },
+            select: {
+                id: true,
+                name: true,
+                email: true,
+                bio: true,
+                website: true,
+                avatar_url: true
+            }
+        })
 
         if (!user) {
             return NextResponse.json({user: null})

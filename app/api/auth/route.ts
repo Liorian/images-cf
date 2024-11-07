@@ -1,16 +1,13 @@
 import {NextResponse} from 'next/server';
 import bcrypt from 'bcrypt';
-import {db} from '@/lib/db';
+import {prisma} from '@/lib/prisma';
 import {SignJWT} from 'jose';
 import {nanoid} from 'nanoid';
-import {sql} from 'kysely';
 
-// 用于 JWT 签名的密钥
 const JWT_SECRET = new TextEncoder().encode(
     process.env.JWT_SECRET || 'your-secret-key'
 );
 
-// 添加生成头像 URL 的函数
 function generateAvatarUrl(seed: string) {
     return `https://api.dicebear.com/9.x/avataaars/svg?seed=${encodeURIComponent(seed)}`;
 }
@@ -21,11 +18,9 @@ export async function POST(request: Request) {
 
         if (action === 'login') {
             // 登录逻辑
-            const user = await db
-                .selectFrom('users')
-                .selectAll()
-                .where('email', '=', email)
-                .executeTakeFirst();
+            const user = await prisma.users.findUnique({
+                where: {email}
+            });
 
             if (!user) {
                 return NextResponse.json(
@@ -54,7 +49,6 @@ export async function POST(request: Request) {
                 .setExpirationTime('24h')
                 .sign(JWT_SECRET);
 
-            // 设置 cookie
             const response = NextResponse.json({
                 user: {
                     id: user.id,
@@ -76,11 +70,9 @@ export async function POST(request: Request) {
 
         } else if (action === 'register') {
             // 检查邮箱是否已存在
-            const existingUser = await db
-                .selectFrom('users')
-                .selectAll()
-                .where('email', '=', email)
-                .executeTakeFirst();
+            const existingUser = await prisma.users.findUnique({
+                where: {email}
+            });
 
             if (existingUser) {
                 return NextResponse.json(
@@ -95,20 +87,23 @@ export async function POST(request: Request) {
             // 生成头像 URL
             const avatarUrl = generateAvatarUrl(email);
 
-            // 创建新用户时包含头像
-            const result = await db
-                .insertInto('users')
-                .values({
-                    id: sql`gen_random_uuid()`,
+            // 创建新用户
+            const result = await prisma.users.create({
+                data: {
+                    id: nanoid(),
                     name,
                     email,
                     password: hashedPassword,
                     avatar_url: avatarUrl,
-                    created_at: new Date(),
-                    updated_at: new Date()
-                })
-                .returning(['id', 'name', 'email', 'avatar_url', 'created_at'])
-                .executeTakeFirstOrThrow();
+                },
+                select: {
+                    id: true,
+                    name: true,
+                    email: true,
+                    avatar_url: true,
+                    created_at: true
+                }
+            });
 
             return NextResponse.json({
                 user: result
