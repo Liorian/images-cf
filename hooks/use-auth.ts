@@ -12,7 +12,7 @@ interface User {
     id: string          // 用户唯一标识
     name: string        // 用户名
     email: string       // 邮箱
-    avatar_url: string  // 头像URL
+    avatarUrl: string  // 头像URL
     bio?: string        // 个人简介（可选）
     website?: string    // 个人网站（可选）
 }

@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
         if (action === 'login') {
             // 登录逻辑
-            const user = await prisma.users.findUnique({
+            const user = await prisma.user.findUnique({
                 where: {email}
             });
 
@@ -70,7 +70,7 @@ export async function POST(request: Request) {
 
         } else if (action === 'register') {
             // 检查邮箱是否已存在
-            const existingUser = await prisma.users.findUnique({
+            const existingUser = await prisma.user.findUnique({
                 where: {email}
             });
 
@@ -88,20 +88,19 @@ export async function POST(request: Request) {
             const avatarUrl = generateAvatarUrl(email);
 
             // 创建新用户
-            const result = await prisma.users.create({
+            const result = await prisma.user.create({
                 data: {
-                    id: nanoid(),
                     name,
                     email,
                     password: hashedPassword,
-                    avatar_url: avatarUrl,
+                    avatarUrl: avatarUrl,
                 },
                 select: {
                     id: true,
                     name: true,
                     email: true,
-                    avatar_url: true,
-                    created_at: true
+                    avatarUrl: true,
+                    createdAt: true
                 }
             });
 

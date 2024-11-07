@@ -40,9 +40,9 @@ export default function ProfilePage() {
                     <div className="flex flex-col md:flex-row items-center gap-6">
                         <div className="relative">
                             <div className="w-32 h-32 rounded-full overflow-hidden bg-muted">
-                                {(user?.avatar_url) ? (
+                                {(user?.avatarUrl) ? (
                                     <Image
-                                        src={user?.avatar_url || ''}
+                                        src={user?.avatarUrl || ''}
                                         width={128} height={128}
                                         alt={`${user?.name || 'User'}'s avatar`}
                                         className="object-cover w-full h-full"

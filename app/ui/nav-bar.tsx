@@ -67,9 +67,9 @@ export default function NavBar() {
                                 <DropdownMenuTrigger asChild>
                                     <button
                                         className="flex items-center space-x-2 hover:opacity-80 transition-opacity focus:outline-none">
-                                        {user.avatar_url ? (
+                                        {user.avatarUrl ? (
                                             <Image
-                                                src={user.avatar_url}
+                                                src={user.avatarUrl}
                                                 alt={user.name}
                                                 width={32}
                                                 height={32}

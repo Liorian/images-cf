@@ -7,7 +7,7 @@
       "password": "123456",
       "bio": "这是一个测试账号",
       "website": "https://example.com",
-      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=1"
+      "avatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=1"
     },
     {
       "id": "410544b2-4001-4271-9855-fec4b6a6442b",
@@ -16,7 +16,7 @@
       "password": "123456",
       "bio": "这是第二个测试账号",
       "website": "https://example2.com",
-      "avatar_url": "https://api.dicebear.com/7.x/avataaars/svg?seed=2"
+      "avatarUrl": "https://api.dicebear.com/7.x/avataaars/svg?seed=2"
     }
   ]
-} 
+}

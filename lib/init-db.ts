@@ -13,7 +13,7 @@ export async function createUsersTable() {
             const hashedPassword = await hash(user.password, SALT_ROUNDS);
             console.log(`正在处理用户: ${user.name} (${user.email})`);
 
-            await prisma.users.upsert({
+            await prisma.user.upsert({
                 where: {email: user.email},
                 update: {},
                 create: {
@@ -23,7 +23,7 @@ export async function createUsersTable() {
                     password: hashedPassword,
                     bio: user.bio,
                     website: user.website,
-                    avatar_url: user.avatar_url
+                    avatarUrl: user.avatarUrl
                 }
             });
 
