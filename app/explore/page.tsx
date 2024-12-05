@@ -17,13 +17,33 @@ export default function Component() {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const promptText = formData.get('prompt')
-        console.log('Generating image for prompt:', promptText)
-
+        
+        if (!promptText) return
+        
         setIsGenerating(true)
         setImageLoaded(false)
-        await new Promise(resolve => setTimeout(resolve, 2000))
-        setGeneratedImage('/placeholder.svg')
-        setIsGenerating(false)
+        
+        try {
+            const response = await fetch('/api/generate-image', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ prompt: promptText }),
+            })
+
+            if (!response.ok) {
+                throw new Error('Failed to generate image')
+            }
+
+            const data = await response.json()
+            setGeneratedImage(data.imagePath)
+        } catch (error) {
+            console.error('Error generating image:', error)
+            // 这里可以添加错误提示
+        } finally {
+            setIsGenerating(false)
+        }
     }
 
     return (
