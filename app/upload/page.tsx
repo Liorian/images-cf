@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useState} from 'react'
-import {Upload, X} from 'lucide-react'
+import {Upload, X, Loader2} from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {Card} from '@/components/ui/card'
 import Image from 'next/image'
@@ -10,6 +10,8 @@ import {cn} from '@/lib/utils'
 export default function Component() {
     const [selectedFiles, setSelectedFiles] = useState<File[]>([])
     const [isDragging, setIsDragging] = useState(false)
+    const [isUploading, setIsUploading] = useState(false)
+    const [uploadProgress, setUploadProgress] = useState<number[]>([])
 
     const handleDragOver = (e: React.DragEvent) => {
         e.preventDefault()
@@ -37,6 +39,43 @@ export default function Component() {
 
     const handleRemoveFile = (index: number) => {
         setSelectedFiles(prev => prev.filter((_, i) => i !== index))
+    }
+
+    const handleUpload = async () => {
+        setIsUploading(true)
+        setUploadProgress(new Array(selectedFiles.length).fill(0))
+
+        try {
+            const uploads = selectedFiles.map(async (file, index) => {
+                const formData = new FormData()
+                formData.append('file', file)
+
+                const response = await fetch('/api/upload', {
+                    method: 'POST',
+                    body: formData,
+                })
+
+                if (!response.ok) {
+                    throw new Error('Upload failed')
+                }
+
+                setUploadProgress(prev => {
+                    const newProgress = [...prev]
+                    newProgress[index] = 100
+                    return newProgress
+                })
+
+                return await response.json()
+            })
+
+            await Promise.all(uploads)
+            setSelectedFiles([])
+            setUploadProgress([])
+        } catch (error) {
+            console.error('Upload error:', error)
+        } finally {
+            setIsUploading(false)
+        }
     }
 
     return (
@@ -89,9 +128,17 @@ export default function Component() {
                     <div className="flex gap-3">
                         <Button
                             className="flex-1"
-                            disabled={selectedFiles.length === 0}
+                            disabled={selectedFiles.length === 0 || isUploading}
+                            onClick={handleUpload}
                         >
-                            开始上传
+                            {isUploading ? (
+                                <>
+                                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                                    上传中...
+                                </>
+                            ) : (
+                                '开始上传'
+                            )}
                         </Button>
                         <Button
                             variant="outline"
@@ -126,6 +173,13 @@ export default function Component() {
                                         >
                                             <X className="h-4 w-4 text-white"/>
                                         </button>
+                                        {uploadProgress[index] > 0 && uploadProgress[index] < 100 && (
+                                            <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                                                <div className="text-white font-medium">
+                                                    {uploadProgress[index]}%
+                                                </div>
+                                            </div>
+                                        )}
                                     </div>
                                 )
                             ))}
