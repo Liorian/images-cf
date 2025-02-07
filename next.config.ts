@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
                 hostname: 'api.dicebear.com', // 允许的域名
                 pathname: '/9.x/**', // 允许的路径模式 (** 表示任意路径)
             },
+            {
+                protocol: 'https',
+                hostname: 'cdn.lhao.org',
+                pathname: '/images/**',
+            },
         ],
         // 允许使用 SVG 图片 (默认情况下 Next.js 会阻止 SVG 以防止 XSS 攻击)
         dangerouslyAllowSVG: true,

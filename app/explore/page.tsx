@@ -17,19 +17,19 @@ export default function Component() {
         e.preventDefault()
         const formData = new FormData(e.currentTarget)
         const promptText = formData.get('prompt')
-        
+
         if (!promptText) return
-        
+
         setIsGenerating(true)
         setImageLoaded(false)
-        
+
         try {
             const response = await fetch('/api/generate-image', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ prompt: promptText }),
+                body: JSON.stringify({prompt: promptText}),
             })
 
             if (!response.ok) {
@@ -96,12 +96,12 @@ export default function Component() {
                                     imageLoaded ? "opacity-100" : "opacity-0"
                                 )}>
                                     <Image
+                                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                                         src={generatedImage}
                                         alt="AI 生成的图片"
                                         fill
                                         className="object-cover"
-                                        priority
-                                        onLoadingComplete={() => {
+                                        onLoad={() => {
                                             setTimeout(() => setImageLoaded(true), 200)
                                         }}
                                     />
@@ -121,7 +121,8 @@ export default function Component() {
                                     "absolute inset-0 flex items-center justify-center transition-opacity duration-700",
                                     imageLoaded ? "opacity-0" : "opacity-100"
                                 )}>
-                                    <div className="w-8 h-8 border-4 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin"/>
+                                    <div
+                                        className="w-8 h-8 border-4 border-muted-foreground/30 border-t-muted-foreground rounded-full animate-spin"/>
                                 </div>
                             </div>
                         ) : (

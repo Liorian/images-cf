@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import {v4 as uuidv4} from 'uuid'
+import {uploadToR2} from './r2Storage'
 
 // API 相关常量
 const API_ENDPOINT = 'https://dashscope.aliyuncs.com/api/v1/services/aigc/text2image/image-synthesis'
@@ -68,31 +69,20 @@ export async function generateImage(prompt: string): Promise<string> {
                 const statusResult = await statusResponse.json()
 
                 if (statusResult.output && statusResult.output.task_status === 'SUCCEEDED') {
-                    const imageBase64 = statusResult.output.results[0].url
+                    const imageUrl = statusResult.output.results[0].url
 
-                    // 确保存储目录存在
-                    const uploadDir = path.join(process.cwd(), 'public', 'generated')
-                    if (!fs.existsSync(uploadDir)) {
-                        fs.mkdirSync(uploadDir, {recursive: true})
+                    // 获取图片数据
+                    const imageResponse = await fetch(imageUrl)
+                    if (!imageResponse.ok) {
+                        throw new Error('获取生成的图片失败')
                     }
 
-                    // 生成唯一的文件名并保存图片
+                    const imageBuffer = Buffer.from(await imageResponse.arrayBuffer())
                     const fileName = `${uuidv4()}.png`
-                    const filePath = path.join(uploadDir, fileName)
 
-                    try {
-                        // 下载并保存图片
-                        const imageResponse = await fetch(imageBase64)
-                        if (!imageResponse.ok) {
-                            throw new Error(`下载图片失败，状态码：${imageResponse.status}`)
-                        }
-                        const imageBuffer = await imageResponse.arrayBuffer()
-                        fs.writeFileSync(filePath, Buffer.from(imageBuffer))
-                        return `/generated/${fileName}`
-                    } catch (downloadError) {
-                        console.error('下载或保存图片失败:', downloadError)
-                        throw new Error('处理生成的图片时发生错误')
-                    }
+                    // 上传到 R2 存储
+                    const publicUrl = await uploadToR2(imageBuffer, fileName)
+                    return publicUrl
                 } else if (statusResult.output && statusResult.output.task_status === 'FAILED') {
                     throw new Error(`任务执行失败：${JSON.stringify(statusResult.output)}`)
                 }
@@ -106,11 +96,7 @@ export async function generateImage(prompt: string): Promise<string> {
 
         throw new Error('收到意外的响应格式')
     } catch (error) {
-        console.error('图片生成失败:', {
-            error,
-            prompt,
-            timestamp: new Date().toISOString()
-        })
-        throw new Error(`图片生成失败: ${error instanceof Error ? error.message : '未知错误'}`)
+        console.error('图片生成失败:', error)
+        throw error
     }
 }
