@@ -18,6 +18,26 @@ model User {
   avatarUrl String?  @map("avatar_url") @db.VarChar(255)
   createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6)
   updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6)
+  Image     Image[]
 
   @@index([email]) // 为 email 添加索引以提升查询性能
+}
+
+model Image {
+  id        String   @id @default(uuid()) @db.Uuid /// 图片记录的唯一标识符
+  userId    String   @db.Uuid /// 关联用户的ID
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade) /// 与User模型的关联关系
+  filename  String   @db.VarChar(255) /// 原始文件名，包含扩展名
+  url       String   @unique @db.VarChar(1024) /// 图片的公开访问URL，用于前端展示
+  objectKey String   @unique @db.VarChar(1024) /// R2存储中的对象键，通常格式为 "用户ID/时间戳-文件名"
+  bucket    String   @default("images") @db.VarChar(63) /// R2存储桶名称，默认为"images"
+  provider  String   @default("r2") @db.VarChar(20) /// 存储提供商，当前使用R2，预留未来扩展其他云存储
+  mimeType  String   @db.VarChar(50) /// 文件的MIME类型，如 "image/jpeg"
+  size      Int /// 文件大小（字节）
+  metadata  Json? /// 存储额外元数据，如图片尺寸、EXIF信息等
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamptz(6) /// 记录创建时间
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamptz(6) /// 记录最后更新时间
+
+  @@index([userId, createdAt]) /// 优化按用户ID和创建时间的查询
+  @@index([objectKey]) /// 优化按对象键的查询
 }
