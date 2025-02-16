@@ -1,7 +1,7 @@
 'use client'
 
 import React, {useActionState} from 'react'
-import {authenticate} from "@/app/lib/actions";
+import {authenticate} from "@/lib/actions";
 import {useSearchParams} from "next/navigation";
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
