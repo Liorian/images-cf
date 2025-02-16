@@ -1,6 +1,8 @@
 'use client'
 
-import React from 'react'
+import React, {useActionState} from 'react'
+import {authenticate} from "@/app/lib/actions";
+import {useSearchParams} from "next/navigation";
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -56,13 +58,7 @@ const registerSchema = z.object({
  * 提供统一的用户认证界面，支持登录和注册功能切换
  */
 export default function LoginPage() {
-    const router = useRouter()
-    const {toast} = useToast()
-    // 控制当前是登录模式(true)还是注册模式(false)
     const [isLogin, setIsLogin] = React.useState(true)
-    // 控制表单提交状态
-    const [isLoading, setIsLoading] = React.useState(false)
-    const {refreshUser} = useAuth()
 
     // 初始化表单，配置验证规则和默认值
     const form = useForm({
@@ -77,57 +73,6 @@ export default function LoginPage() {
     })
 
     /**
-     * 处理表单提交
-     * @param data - 表单数据
-     */
-    const onSubmit = async (data: LoginFormData | RegisterFormData) => {
-        setIsLoading(true)
-
-        try {
-            // 构建请求数据
-            const requestData = {
-                action: isLogin ? 'login' : 'register',
-                ...data
-            }
-
-            // 发送认证请求
-            const response = await fetch('/api/auth', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(requestData),
-            })
-
-            const result = await response.json()
-
-            if (!response.ok) {
-                throw new Error(result.error)
-            }
-
-            // 操作成功后的提示和跳转
-            toast({
-                title: isLogin ? "登录成功" : "注册成功",
-                description: "正在跳转..."
-            })
-
-            // 立即更新用户状态并跳转
-            await refreshUser(result.user)
-            router.push('/')
-
-        } catch (error) {
-            // 错误处理
-            toast({
-                variant: "destructive",
-                title: "错误",
-                description: error instanceof Error ? error.message : '操作失败'
-            })
-        } finally {
-            setIsLoading(false)
-        }
-    }
-
-    /**
      * 切换登录/注册模式
      * 重置表单并清空所有字段
      */
@@ -140,6 +85,11 @@ export default function LoginPage() {
             confirmPassword: '',
         })
     }
+
+    const [errorMessage, formAction, isPending] = useActionState(
+        authenticate,
+        undefined,
+    );
 
     return (
         <div className="container mx-auto px-4 py-12">
@@ -159,7 +109,7 @@ export default function LoginPage() {
                 {/* 登录/注册表单卡片 */}
                 <Card className="p-6 space-y-6">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
+                        <form action={formAction} className="space-y-4">
                             {/* 仅在注册模式显示用户名输入框 */}
                             {!isLogin && (
                                 <FormField
@@ -256,18 +206,20 @@ export default function LoginPage() {
                                     )}
                                 />
                             )}
-
-                            {/* 提交按钮 - 根据表单状态显示不同文本和图标 */}
                             <Button
                                 type="submit"
                                 className="w-full"
-                                disabled={isLoading || !form.formState.isValid}
-                            >
-                                {isLoading ? (<span>处理中...</span>) :
+                                disabled={isPending || !form.formState.isValid}>
+                                {isPending ? (<span>处理中...</span>) :
                                     isLogin ? (<><LogIn className="mr-2 h-4 w-4"/>登录</>)
                                         : (<><UserPlus className="mr-2 h-4 w-4"/>注册</>)
                                 }
                             </Button>
+                            {errorMessage && (
+                                <>
+                                    <p className="text-sm text-red-500">{errorMessage}</p>
+                                </>
+                            )}
                         </form>
                     </Form>
 
