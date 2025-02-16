@@ -2,7 +2,6 @@
 
 import React, {useActionState} from 'react'
 import {authenticate} from "@/lib/actions";
-import {useSearchParams} from "next/navigation";
 import {useForm} from 'react-hook-form'
 import {zodResolver} from '@hookform/resolvers/zod'
 import * as z from 'zod'
@@ -10,9 +9,6 @@ import {Card} from "@/components/ui/card"
 import {Input} from "@/components/ui/input"
 import {Button} from "@/components/ui/button"
 import {LogIn, UserPlus, Mail, Lock, User} from "lucide-react"
-import {useRouter} from 'next/navigation'
-import {useToast} from "@/hooks/use-toast"
-import {useAuth} from '@/hooks/use-auth'
 import {
     Form,
     FormControl,
