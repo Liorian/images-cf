@@ -21,12 +21,12 @@ const nextConfig: NextConfig = {
         dangerouslyAllowSVG: true,
         // 设置 Content-Disposition 响应头为 attachment
         // 这表示浏览器会将图片作为附件处理而不是直接显示
-        contentDispositionType: 'attachment',
+        // contentDispositionType: 'attachment',
         // 设置内容安全策略 (CSP)
         // default-src 'self': 只允许加载来自同源的资源
         // script-src 'none': 禁止执行任何脚本
         // sandbox: 启用最严格的沙箱限制
-        contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+        // contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     },
 };
 
