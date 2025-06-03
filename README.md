@@ -185,3 +185,40 @@
 - 保持 README 文档更新
 
 ## 项目结构
+
+- `app/` - Next.js 路由目录，包含页面、布局和服务端逻辑
+- `components/` - 可复用的 UI 组件
+- `hooks/` - 自定义 React Hooks
+- `lib/` - Prisma 客户端及工具函数
+- `data/` - 示例数据和初始化脚本
+- `public/` - 静态资源目录
+- `migrations/` - Prisma 迁移文件
+- `schema.prisma` - 数据库模型定义
+- `next.config.ts` - Next.js 配置
+- `tailwind.config.ts` - Tailwind CSS 配置
+- `tsconfig.json` - TypeScript 编译配置
+- `auth.ts`/`auth.config.ts` - 认证逻辑与配置
+- `middleware.ts` - 应用中间件
+
+## 本地运行
+
+1. 安装依赖
+   ```bash
+   npm install
+   ```
+2. 在项目根目录创建 `.env`，配置数据库与存储等环境变量，例如：
+   ```env
+   POSTGRES_PRISMA_URL=postgres://user:password@localhost:5432/db
+   POSTGRES_URL_NON_POOLING=postgres://user:password@localhost:5432/db
+   CLOUDFLARE_R2_ENDPOINT=https://<account>.r2.cloudflarestorage.com
+   CLOUDFLARE_R2_ACCESS_KEY_ID=your-key
+   CLOUDFLARE_R2_SECRET_ACCESS_KEY=your-secret
+   CLOUDFLARE_R2_BUCKET_NAME=images
+   JWT_SECRET=your-jwt-secret
+   DASHSCOPE_API_KEY=your-api-key
+   ```
+3. 启动开发服务器
+   ```bash
+   npm run dev
+   ```
+
