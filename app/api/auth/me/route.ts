@@ -9,7 +9,7 @@ const JWT_SECRET = new TextEncoder().encode(
 
 export async function GET() {
     try {
-        const cookieStore = await cookies()
+        const cookieStore = cookies()
         const token = cookieStore.get('auth-token')?.value
 
         if (!token) {
