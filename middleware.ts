@@ -8,6 +8,6 @@ export const config = {
         /*
          * 匹配除了 _next/static、_next/image、favicon.ico 等静态资源以外的所有路由
          */
-        '/((?!api|_next/static|_next/image|favicon.ico).*)',
+        '/((?!api|_next/static|_next/image|favicon.ico|.*\\.svg).*)',
     ],
 }
