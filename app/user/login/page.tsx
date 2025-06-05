@@ -32,6 +32,14 @@ interface RegisterFormData {
     confirmPassword: string;
 }
 
+// 登录和注册表单的联合类型
+interface FormData {
+    email: string;
+    password: string;
+    name?: string;
+    confirmPassword?: string;
+}
+
 // 登录表单的验证模式：要求有效的邮箱和至少6位密码
 const loginSchema = z.object({
     email: z.string().email('请输入有效的邮箱地址'),
@@ -57,7 +65,7 @@ export default function LoginPage() {
     const [isLogin, setIsLogin] = React.useState(true)
 
     // 初始化表单，配置验证规则和默认值
-    const form = useForm({
+    const form = useForm<FormData>({
         resolver: zodResolver(isLogin ? loginSchema : registerSchema),
         mode: 'onChange', // 实时验证
         defaultValues: {
