@@ -1,5 +1,8 @@
 import type { Config } from "tailwindcss";
 
+// Tailwind CSS v4 configuration
+// Ensure that all relevant directories are included in `content`
+
 const config: Config = {
     darkMode: 'class',
     content: [
