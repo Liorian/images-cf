@@ -1,6 +1,6 @@
 'use client'
 
-import React, {useState} from 'react'
+import React, {useState, useCallback, useMemo, useEffect} from 'react'
 import {Upload, X, Loader2} from 'lucide-react'
 import {Button} from '@/components/ui/button'
 import {Card} from '@/components/ui/card'
@@ -12,36 +12,46 @@ export default function Component() {
     const [isDragging, setIsDragging] = useState(false)
     const [isUploading, setIsUploading] = useState(false)
     const [uploadProgress, setUploadProgress] = useState<number[]>([])
+    const [previewUrls, setPreviewUrls] = useState<string[]>([])
 
-    const handleDragOver = (e: React.DragEvent) => {
+    useEffect(() => {
+        const urls = selectedFiles.map(file => URL.createObjectURL(file))
+        setPreviewUrls(urls)
+        
+        return () => {
+            urls.forEach(url => URL.revokeObjectURL(url))
+        }
+    }, [selectedFiles])
+
+    const handleDragOver = useCallback((e: React.DragEvent) => {
         e.preventDefault()
         setIsDragging(true)
-    }
+    }, [])
 
-    const handleDragLeave = (e: React.DragEvent) => {
+    const handleDragLeave = useCallback((e: React.DragEvent) => {
         e.preventDefault()
         setIsDragging(false)
-    }
+    }, [])
 
-    const handleDrop = (e: React.DragEvent) => {
+    const handleDrop = useCallback((e: React.DragEvent) => {
         e.preventDefault()
         setIsDragging(false)
         const files = Array.from(e.dataTransfer.files)
         setSelectedFiles(prev => [...prev, ...files].slice(0, 4))
-    }
+    }, [])
 
-    const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileSelect = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const files = Array.from(e.target.files)
             setSelectedFiles(prev => [...prev, ...files].slice(0, 4))
         }
-    }
+    }, [])
 
-    const handleRemoveFile = (index: number) => {
+    const handleRemoveFile = useCallback((index: number) => {
         setSelectedFiles(prev => prev.filter((_, i) => i !== index))
-    }
+    }, [])
 
-    const handleUpload = async () => {
+    const handleUpload = useCallback(async () => {
         setIsUploading(true)
         setUploadProgress(new Array(selectedFiles.length).fill(0))
 
@@ -56,7 +66,7 @@ export default function Component() {
                 })
 
                 if (!response.ok) {
-                    throw new Error('Upload failed')
+                    throw new Error(`Upload failed for ${file.name}`)
                 }
 
                 setUploadProgress(prev => {
@@ -71,12 +81,13 @@ export default function Component() {
             await Promise.all(uploads)
             setSelectedFiles([])
             setUploadProgress([])
+            setPreviewUrls([])
         } catch (error) {
             console.error('Upload error:', error)
         } finally {
             setIsUploading(false)
         }
-    }
+    }, [selectedFiles])
 
     return (
         <div className="container mx-auto px-4 py-8">
@@ -162,7 +173,7 @@ export default function Component() {
                                         className="relative aspect-square rounded-lg overflow-hidden bg-muted"
                                     >
                                         <Image
-                                            src={URL.createObjectURL(selectedFiles[index])}
+                                            src={previewUrls[index]}
                                             alt={`Preview ${index + 1}`}
                                             fill
                                             className="object-cover"
